@@ -12,9 +12,14 @@ func (f *UserServiceDouble) CreateUser(newUserRequest user_service.NewUserReques
 	err error) {
 
 	if newUserRequest.Email == "invalid_email@email.com" {
+		user = nil
 		success = false
+		err = nil
 		return
 	}
 
-	return user, success, err
+	user = nil
+	success = true
+	err = nil
+	return
 }
