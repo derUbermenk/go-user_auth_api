@@ -14,16 +14,6 @@ func Create(us user_service.UserService) func(c *gin.Context) {
 
 		_ = c.ShouldBindJSON(&new_user_request)
 
-		/*
-			if err != nil {
-				log.Printf("Handler Error: %v", err)
-				c.JSON(
-					http.StatusBadRequest,
-					nil,
-				)
-			}
-		*/
-
 		user, success, err := us.CreateUser(new_user_request)
 
 		if err != nil {
@@ -50,5 +40,28 @@ func Create(us user_service.UserService) func(c *gin.Context) {
 			user,
 		)
 	}
+}
 
+func FetchByEmail(us user_service.UserService) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		email := c.Param("email")
+
+		user, err := us.FetchUserByEmail(email)
+
+		if err != nil {
+			log.Printf("Service Error: %v", err)
+			c.JSON(
+				http.StatusInternalServerError,
+				nil,
+			)
+
+			return
+		}
+
+		if user == nil {
+			c.Status(http.StatusNotFound)
+		} else {
+			c.Status(http.StatusOK)
+		}
+	}
 }
