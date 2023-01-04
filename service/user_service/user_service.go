@@ -7,5 +7,5 @@ type NewUserRequest struct {
 }
 
 type UserService interface {
-	CreateUser(newUserRequest NewUserRequest) (user interface{}, status bool, err error)
+	CreateUser(newUserRequest NewUserRequest) (user interface{}, success bool, err error)
 }
