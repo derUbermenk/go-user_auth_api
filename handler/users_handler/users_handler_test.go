@@ -6,27 +6,11 @@ import (
 	"net/http/httptest"
 
 	"github.com/derUbermenk/go-user_auth_api/handler/users_handler"
-	"github.com/derUbermenk/go-user_auth_api/service/user_service"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-type FakeUserService struct{}
-
-func (f *FakeUserService) CreateUser(newUserRequest user_service.NewUserRequest) (
-	user interface{},
-	success bool,
-	err error) {
-
-	if newUserRequest.Email == "invalid_email@email.com" {
-		success = false
-		return
-	}
-
-	return user, success, err
-}
 
 var _ = Describe("UsersHandler", func() {
 	var r *gin.Engine
@@ -38,7 +22,7 @@ var _ = Describe("UsersHandler", func() {
 
 				BeforeEach(func() {
 					r = gin.Default()
-					r.POST("/user/create", users_handler.Create(&FakeUserService{}))
+					r.POST("/user/create", users_handler.Create(&users_handler.UserServiceDouble{}))
 				})
 
 				It("responds with status 200: OK when user has been created", func() {
