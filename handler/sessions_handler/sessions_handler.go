@@ -1,4 +1,4 @@
-package sessionshandler
+package sessions_handler
 
 import (
 	"net/http"
