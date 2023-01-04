@@ -6,12 +6,28 @@ import (
 	"net/http/httptest"
 
 	"github.com/derUbermenk/go-user_auth_api/handler/users_handler"
+	"github.com/derUbermenk/go-user_auth_api/repository"
+	"github.com/derUbermenk/go-user_auth_api/service/user_service"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	// "github.com/derUbermenk/go-user_auth_api/handler/users_handler"
 )
+
+type FakeUserService struct{}
+
+func (f *FakeUserService) CreateUser(newUserRequest user_service.NewUserRequest) (
+	user repository.User,
+	success bool,
+	err error) {
+
+	if newUserRequest.Email == "invalid_email@email.com" {
+		success = false
+		return
+	}
+
+	return user, success, err
+}
 
 var _ = Describe("UsersHandler", func() {
 	var r *gin.Engine
@@ -23,7 +39,7 @@ var _ = Describe("UsersHandler", func() {
 
 				BeforeEach(func() {
 					r = gin.Default()
-					r.POST("/user/create", users_handler.Create(FakeUserService{}))
+					r.POST("/user/create", users_handler.Create(&FakeUserService{}))
 				})
 
 				It("responds with status 200: OK when user has been created", func() {
@@ -45,8 +61,8 @@ var _ = Describe("UsersHandler", func() {
 
 				It("responds with status 400: bad request when there are missing params or invalid inputs", func() {
 					valid_input := map[string]interface{}{
-						"email":    "invalid_email@email.com",
-						"name":     "invalid_name",
+						"email": "invalid_email@email.com",
+						// with missing name
 						"password": "invalid_password",
 					}
 
