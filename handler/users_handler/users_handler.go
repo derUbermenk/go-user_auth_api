@@ -24,7 +24,7 @@ func Create(us user_service.UserService) func(c *gin.Context) {
 			}
 		*/
 
-		user, status, err := us.CreateUser(new_user_request)
+		user, success, err := us.CreateUser(new_user_request)
 
 		if err != nil {
 			log.Printf("Service Error: %v", err)
@@ -36,7 +36,7 @@ func Create(us user_service.UserService) func(c *gin.Context) {
 			return
 		}
 
-		if status == false {
+		if !success {
 			c.JSON(
 				http.StatusBadRequest,
 				nil,
