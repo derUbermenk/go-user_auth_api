@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 
 	"github.com/derUbermenk/go-user_auth_api/handler/users_handler"
-	"github.com/derUbermenk/go-user_auth_api/repository"
 	"github.com/derUbermenk/go-user_auth_api/service/user_service"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
@@ -17,7 +16,7 @@ import (
 type FakeUserService struct{}
 
 func (f *FakeUserService) CreateUser(newUserRequest user_service.NewUserRequest) (
-	user repository.User,
+	user interface{},
 	success bool,
 	err error) {
 
