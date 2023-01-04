@@ -16,17 +16,13 @@ import (
 var _ = Describe("UsersHandler", func() {
 	var r *gin.Engine
 
-	BeforeEach(func() {
-		// Setup server
-		r := gin.Default()
-	})
-
 	Context(
 		"Non Authentication protected routes",
 		func() {
 			Describe("Create", func() {
 
 				BeforeEach(func() {
+					r = gin.Default()
 					r.POST("/user/create", users_handler.Create(FakeUserService{}))
 				})
 

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Create(user_service user_service.UserService) func(c *gin.Context) {
+func Create(us user_service.UserService) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var new_user_request user_service.NewUserRequest
 
@@ -24,7 +24,7 @@ func Create(user_service user_service.UserService) func(c *gin.Context) {
 			}
 		*/
 
-		user, status, err := user_service.CreateUser(new_user_request)
+		user, status, err := us.CreateUser(new_user_request)
 
 		if err != nil {
 			log.Printf("Service Error: %v", err)
