@@ -4,16 +4,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/derUbermenk/go-user_auth_api/service/user_service"
 	"github.com/gin-gonic/gin"
 )
 
-func Create(user_service api.UserService) func(c *gin.Context) {
-	type CreateResponse struct {
-		User_ID int `json:user_id`
-	}
-
+func Create(user_service user_service.UserService) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var new_user_request api.NewUserRequest
+		var new_user_request user_service.NewUserRequest
 
 		_ = c.ShouldBindJSON(&new_user_request)
 
