@@ -22,7 +22,7 @@ var _ = Describe("UsersHandler", func() {
 
 				BeforeAll(func() {
 					r = gin.Default()
-					r.HEAD("/user/:email", users_handler.GetByEmail(&users_handler.UserServiceDouble{}))
+					r.HEAD("/user/create", users_handler.Create(&users_handler.UserServiceDouble{}))
 				})
 
 				It("responds with status 200: OK when user has been created", func() {
