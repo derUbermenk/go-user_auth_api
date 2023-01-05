@@ -114,3 +114,25 @@ func FetchSelf(us user_service.UserService) func(c *gin.Context) {
 		c.JSON(http.StatusOK, user)
 	}
 }
+
+func Delete(us user_service.UserService) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		to_delete_user_id, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, nil)
+		}
+
+		deleted_user_id, err := us.DeleteUser(to_delete_user_id)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+		}
+
+		if deleted_user_id == nil {
+			c.JSON(http.StatusNotFound, nil)
+		}
+
+		c.JSON(http.StatusOK, nil)
+	}
+}
