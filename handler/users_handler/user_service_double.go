@@ -23,3 +23,12 @@ func (f *UserServiceDouble) CreateUser(newUserRequest user_service.NewUserReques
 	err = nil
 	return
 }
+
+func (f *UserServiceDouble) FetchUserByEmail(email string) (user interface{}, err error) {
+	if email == "existing_email@email.com" {
+		user = struct{}{}
+		return
+	}
+	user = nil
+	return
+}
