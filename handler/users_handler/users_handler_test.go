@@ -139,5 +139,30 @@ var _ = Describe("UsersHandler", func() {
 				Expect(rec.Result().StatusCode).To((Equal(404)))
 			})
 		})
+
+		Describe("Delete", func() {
+			BeforeEach(func() {
+				r = gin.Default()
+				r.DELETE("/user/:id/destroy", users_handler.Delete(&users_handler.UserServiceDouble{}))
+			})
+
+			It("responds with status 200: OK when user was successfully deleted", func() {
+				rec := httptest.NewRecorder()
+				req, _ := http.NewRequest("DELETE", "/user/1/destroy", nil)
+
+				r.ServeHTTP(rec, req)
+
+				Expect(rec.Result().StatusCode).To((Equal(200)))
+			})
+
+			It("responds with status 404: Not Found when user to be destroyed does not exist", func() {
+				rec := httptest.NewRecorder()
+				req, _ := http.NewRequest("DELETE", "/user/2/destroy", nil)
+
+				r.ServeHTTP(rec, req)
+
+				Expect(rec.Result().StatusCode).To((Equal(404)))
+			})
+		})
 	})
 })
