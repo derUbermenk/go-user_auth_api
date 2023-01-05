@@ -32,3 +32,13 @@ func (f *UserServiceDouble) FetchUserByEmail(email string) (user interface{}, er
 	user = nil
 	return
 }
+
+func (f *UserServiceDouble) FetchUser(id int) (user interface{}, err error) {
+	if id != 1 {
+		user = nil
+		return
+	}
+
+	user = struct{}{}
+	return
+}
