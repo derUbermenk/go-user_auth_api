@@ -3,6 +3,7 @@ package users_handler
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/derUbermenk/go-user_auth_api/service/user_service"
 	"github.com/gin-gonic/gin"
@@ -63,5 +64,29 @@ func FetchByEmail(us user_service.UserService) func(c *gin.Context) {
 		} else {
 			c.Status(http.StatusOK)
 		}
+	}
+}
+
+func Fetch(us user_service.UserService) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		requested_user_id, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, nil)
+		}
+
+		user, err := us.FetchUser(requested_user_id)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		if user == nil {
+			c.JSON(http.StatusNotFound, nil)
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
 	}
 }
