@@ -8,4 +8,5 @@ type NewUserRequest struct {
 
 type UserService interface {
 	CreateUser(newUserRequest NewUserRequest) (user interface{}, success bool, err error)
+	FetchUserByEmail(email string) (user interface{}, err error)
 }
