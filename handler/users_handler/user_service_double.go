@@ -35,7 +35,15 @@ func (f *UserServiceDouble) FetchUserByEmail(email string) (user interface{}, er
 
 func (f *UserServiceDouble) FetchUser(id int) (user interface{}, err error) {
 	if id != 1 {
-		user = nil
+		return
+	}
+
+	user = struct{}{}
+	return
+}
+
+func (f *UserServiceDouble) FetchUserSelf(id int) (user interface{}, err error) {
+	if id != 1 {
 		return
 	}
 
