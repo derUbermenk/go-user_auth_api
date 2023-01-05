@@ -92,7 +92,7 @@ var _ = Describe("UsersHandler", func() {
 					r.GET("/user/:id", users_handler.Fetch(&users_handler.UserServiceDouble{}))
 				})
 
-				It("responds with status 200: OK when user was found", func() {
+				It("responds with status 200: OK when user was found and retrieved", func() {
 					rec := httptest.NewRecorder()
 					req, _ := http.NewRequest("GET", "/user/1", nil)
 
@@ -101,7 +101,7 @@ var _ = Describe("UsersHandler", func() {
 					Expect(rec.Result().StatusCode).To((Equal(200)))
 				})
 
-				It("responds with status 404: Not Found when user was found", func() {
+				It("responds with status 404: Not Found when user was not found", func() {
 					rec := httptest.NewRecorder()
 					req, _ := http.NewRequest("GET", "/user/2", nil)
 
@@ -113,4 +113,31 @@ var _ = Describe("UsersHandler", func() {
 
 		},
 	)
+
+	Context("Authentication and Authorization protected routes", func() {
+		Describe("FetchSelf", func() {
+			BeforeEach(func() {
+				r = gin.Default()
+				r.GET("/user/:id/self", users_handler.FetchSelf(&users_handler.UserServiceDouble{}))
+			})
+
+			It("responds with status 200: OK when user was found and retrieved", func() {
+				rec := httptest.NewRecorder()
+				req, _ := http.NewRequest("GET", "/user/1/self", nil)
+
+				r.ServeHTTP(rec, req)
+
+				Expect(rec.Result().StatusCode).To((Equal(200)))
+			})
+
+			It("responds with status 404: Not Found when user was not found", func() {
+				rec := httptest.NewRecorder()
+				req, _ := http.NewRequest("GET", "/user/2/self", nil)
+
+				r.ServeHTTP(rec, req)
+
+				Expect(rec.Result().StatusCode).To((Equal(404)))
+			})
+		})
+	})
 })
