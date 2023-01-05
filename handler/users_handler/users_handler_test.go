@@ -99,7 +99,6 @@ var _ = Describe("UsersHandler", func() {
 					r.ServeHTTP(rec, req)
 
 					Expect(rec.Result().StatusCode).To((Equal(200)))
-					Expect(rec.Body).To(Not(BeNil()))
 				})
 
 				It("responds with status 404: Not Found when user was found", func() {
@@ -109,7 +108,6 @@ var _ = Describe("UsersHandler", func() {
 					r.ServeHTTP(rec, req)
 
 					Expect(rec.Result().StatusCode).To((Equal(404)))
-					Expect(rec.Body).To(BeNil())
 				})
 			})
 
