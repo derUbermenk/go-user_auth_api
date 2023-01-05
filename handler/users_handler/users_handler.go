@@ -90,3 +90,27 @@ func Fetch(us user_service.UserService) func(c *gin.Context) {
 		c.JSON(http.StatusOK, user)
 	}
 }
+
+func FetchSelf(us user_service.UserService) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		requested_user_id, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, nil)
+		}
+
+		user, err := us.FetchUserSelf(requested_user_id)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		if user == nil {
+			c.JSON(http.StatusNotFound, nil)
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
+	}
+}
