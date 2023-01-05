@@ -15,8 +15,7 @@ import (
 var _ = Describe("UsersHandler", func() {
 	var r *gin.Engine
 
-	Context(
-		"Non Authentication protected routes",
+	Context("Non Authentication protected routes",
 		func() {
 			Describe("Create", func() {
 
@@ -76,11 +75,44 @@ var _ = Describe("UsersHandler", func() {
 
 				It("responds with status 404: Not Found when user with email does not exist", Pending, func() {
 					rec := httptest.NewRecorder()
-					req, _ := http.NewRequest("HEAD", "/user/non_existing_email@email.com", nil)
+					req, _ := http.NewRequest("", "/user/non_existing_email@email.com", nil)
 
 					r.ServeHTTP(rec, req)
 					Expect(rec.Result().StatusCode).To((Equal(404)))
 				})
 			})
 		})
+
+	Context("Authentication protected routes",
+		func() {
+			Describe("Fetch", func() {
+
+				BeforeEach(func() {
+					r = gin.Default()
+					r.GET("/user/:id", users_handler.Fetch(&users_handler.UserServiceDouble{}))
+				})
+
+				It("responds with status 200: OK when user was found", func() {
+					rec := httptest.NewRecorder()
+					req, _ := http.NewRequest("GET", "/user/1", nil)
+
+					r.ServeHTTP(rec, req)
+
+					Expect(rec.Result().StatusCode).To((Equal(200)))
+					Expect(rec.Body).To(Not(BeNil()))
+				})
+
+				It("responds with status 404: Not Found when user was found", func() {
+					rec := httptest.NewRecorder()
+					req, _ := http.NewRequest("GET", "/user/2", nil)
+
+					r.ServeHTTP(rec, req)
+
+					Expect(rec.Result().StatusCode).To((Equal(404)))
+					Expect(rec.Body).To(BeNil())
+				})
+			})
+
+		},
+	)
 })
