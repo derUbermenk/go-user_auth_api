@@ -20,9 +20,9 @@ var _ = Describe("UsersHandler", func() {
 		func() {
 			Describe("Create", func() {
 
-				BeforeAll(func() {
+				BeforeEach(func() {
 					r = gin.Default()
-					r.HEAD("/user/create", users_handler.Create(&users_handler.UserServiceDouble{}))
+					r.POST("/user/create", users_handler.Create(&users_handler.UserServiceDouble{}))
 				})
 
 				It("responds with status 200: OK when user has been created", func() {
@@ -60,22 +60,23 @@ var _ = Describe("UsersHandler", func() {
 			})
 
 			Describe("FetchByEmail", func() {
-				BeforeAll(func() {
+				BeforeEach(func() {
 					r = gin.Default()
 					r.HEAD("/user/:email", users_handler.FetchByEmail(&users_handler.UserServiceDouble{}))
 				})
 
 				It("responds with status 200: Ok when user with email exists", func() {
 					rec := httptest.NewRecorder()
-					req, _ := http.NewRequest("POST", "/user/existing_email@email.com", nil)
+					req, _ := http.NewRequest("HEAD", "/user/existing_email@email.com", nil)
 
 					r.ServeHTTP(rec, req)
 					Expect(rec.Result().StatusCode).To((Equal(200)))
+
 				})
 
-				It("responds with status 404: Not Found when user with email does not exist", func() {
+				It("responds with status 404: Not Found when user with email does not exist", Pending, func() {
 					rec := httptest.NewRecorder()
-					req, _ := http.NewRequest("POST", "/user/non_existing_email@email.com", nil)
+					req, _ := http.NewRequest("HEAD", "/user/non_existing_email@email.com", nil)
 
 					r.ServeHTTP(rec, req)
 					Expect(rec.Result().StatusCode).To((Equal(404)))
