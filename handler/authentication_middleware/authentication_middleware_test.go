@@ -16,7 +16,7 @@ var _ = Describe("AuthenticationMiddleware", func() {
 	Describe("Authenticate", func() {
 		BeforeEach(func() {
 			r = gin.Default()
-			r.POST("/authenticate", authentication_middleware.Authenticate(&authentication_middleware.AuthServiceDouble{}))
+			r.POST("/authenticate", authentication_middleware.Authenticate())
 		})
 
 		It("sets a context specific value user_id when the user is authenticated", func() {
