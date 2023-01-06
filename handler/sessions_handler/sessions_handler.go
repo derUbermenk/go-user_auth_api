@@ -12,7 +12,7 @@ func Create(ss session_service.SessionService) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var new_session_request session_service.NewSessionRequest
 
-		_ = c.ShouldBindJSON(session_service.new_session_request)
+		_ = c.ShouldBindJSON(new_session_request)
 
 		id, valid_credentials, err := ss.CreateSession(new_session_request)
 
