@@ -11,5 +11,5 @@ type UserService interface {
 	FetchUserByEmail(email string) (user interface{}, err error)
 	FetchUser(id int) (user interface{}, err error)
 	FetchUserSelf(id int) (user interface{}, err error)
-	DeleteUser(id int) (deleted_user_id int, err error)
+	DeleteUser(id int) (deleted_user interface{}, err error)
 }
