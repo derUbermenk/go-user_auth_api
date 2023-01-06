@@ -48,6 +48,34 @@ func Create(ss session_service.SessionService) func(c *gin.Context) {
 			http.StatusOK,
 			nil,
 		)
+	}
+}
 
+func Delete(ss session_service.SessionService) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		_, err := c.Request.Cookie("session")
+
+		if err != nil {
+			log.Printf("Service Error: %v", err)
+			c.JSON(
+				http.StatusInternalServerError,
+				nil,
+			)
+
+			return
+		}
+
+		cookie := &http.Cookie{
+			Name:   "session",
+			Value:  "",
+			MaxAge: -1,
+		}
+
+		http.SetCookie(
+			c.Writer,
+			cookie,
+		)
+
+		c.JSON(http.StatusOK, nil)
 	}
 }
