@@ -50,3 +50,12 @@ func (f *UserServiceDouble) FetchUserSelf(id int) (user interface{}, err error) 
 	user = struct{}{}
 	return
 }
+
+func (f *UserServiceDouble) DeleteUser(id int) (deleted_user interface{}, err error) {
+	if id != 1 {
+		return
+	}
+
+	deleted_user = struct{}{}
+	return
+}
