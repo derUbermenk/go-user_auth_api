@@ -34,6 +34,8 @@ func Create(ss *session_service.SessionService) func(c *gin.Context) {
 			return
 		}
 
+		c.SetCookie("session", id)
+
 		c.JSON(
 			http.StatusOK,
 			nil,
