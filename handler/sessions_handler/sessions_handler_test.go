@@ -71,4 +71,42 @@ var _ = Describe("SessionsHandler", func() {
 			Expect(cookie.Value).To((Equal("1")))
 		})
 	})
+
+	Describe("Delete", func() {
+		BeforeEach(func() {
+			r = gin.Default()
+			r.DELETE("/sessions/delete", sessions_handler.Delete(&sessions_handler.SessionServiceDouble{}))
+		})
+
+		It("Responds with status 200: OK when user has been logged off", func() {
+			rec := httptest.NewRecorder()
+
+			req, _ := http.NewRequest("DELETE", "/sessions/delete", nil)
+			req.AddCookie(
+				&http.Cookie{
+					Name:  "session",
+					Value: "1",
+				},
+			)
+
+			r.ServeHTTP(rec, req)
+			Expect(rec.Result().StatusCode).To(Equal(200))
+		})
+
+		It("Expires the session cookie", func() {
+			rec := httptest.NewRecorder()
+
+			req, _ := http.NewRequest("DELETE", "/sessions/delete", nil)
+			req.AddCookie(
+				&http.Cookie{
+					Name:  "session",
+					Value: "1",
+				},
+			)
+
+			r.ServeHTTP(rec, req)
+			session_cookie := rec.Result().Cookies()[0]
+			Expect(session_cookie.MaxAge).To(Equal(-1))
+		})
+	})
 })
