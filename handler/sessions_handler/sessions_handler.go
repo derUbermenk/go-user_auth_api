@@ -1,6 +1,7 @@
 package sessions_handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -35,7 +36,13 @@ func Create(ss session_service.SessionService) func(c *gin.Context) {
 			return
 		}
 
-		c.SetCookie("session", id)
+		http.SetCookie(
+			c.Writer,
+			&http.Cookie{
+				Name:  "session",
+				Value: fmt.Sprintf("%v", id),
+			},
+		)
 
 		c.JSON(
 			http.StatusOK,
