@@ -19,7 +19,7 @@ var _ = Describe("SessionsHandler", func() {
 	Describe("Create", func() {
 		BeforeEach(func() {
 			r = gin.Default()
-			r.POST("/sessions/create", sessions_handler.Create(&sessions_handler.SessionsServiceDouble{}))
+			r.POST("/sessions/create", sessions_handler.Create(&sessions_handler.SessionServiceDouble{}))
 		})
 
 		It("responds with 200: OK when login succeeds", func() {
