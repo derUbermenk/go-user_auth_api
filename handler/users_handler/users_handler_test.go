@@ -15,7 +15,7 @@ import (
 var _ = Describe("UsersHandler", func() {
 	var r *gin.Engine
 
-	Context("Non Authentication protected routes",
+	Context("Non Authentication protected handlers",
 		func() {
 			Describe("Create", func() {
 
@@ -83,7 +83,7 @@ var _ = Describe("UsersHandler", func() {
 			})
 		})
 
-	Context("Authentication protected routes",
+	Context("Authentication protected handlers",
 		func() {
 			Describe("Fetch", func() {
 
@@ -114,7 +114,7 @@ var _ = Describe("UsersHandler", func() {
 		},
 	)
 
-	Context("Authentication and Authorization protected routes", func() {
+	Context("Authentication and Authorization protected handlers", func() {
 		Describe("FetchSelf", func() {
 			BeforeEach(func() {
 				r = gin.Default()
