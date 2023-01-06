@@ -123,13 +123,13 @@ func Delete(us user_service.UserService) func(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, nil)
 		}
 
-		deleted_user_id, err := us.DeleteUser(to_delete_user_id)
+		deleted_user, err := us.DeleteUser(to_delete_user_id)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, nil)
 		}
 
-		if deleted_user_id == nil {
+		if deleted_user == nil {
 			c.JSON(http.StatusNotFound, nil)
 		}
 
