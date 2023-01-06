@@ -51,5 +51,24 @@ var _ = Describe("SessionsHandler", func() {
 			r.ServeHTTP(rec, req)
 			Expect(rec.Result().StatusCode).To((Equal(401)))
 		})
+
+		It("Sets a session cookie with key session and an id", func() {
+			// this user has an id 1
+			valid_credentials := map[string]interface{}{
+				"email":    "valid_email@email.com",
+				"password": "valid_password@email.com",
+			}
+
+			body, _ := json.Marshal(valid_credentials)
+
+			rec := httptest.NewRecorder()
+			req, _ := http.NewRequest("POST", "/sessions/create", bytes.NewReader(body))
+
+			r.ServeHTTP(rec, req)
+
+			cookie := rec.Result().Cookies()[0]
+			Expect(cookie.Name).To((Equal("session")))
+			Expect(cookie.Value).To((Equal("1")))
+		})
 	})
 })
