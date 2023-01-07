@@ -23,5 +23,15 @@ func Authenticate() func(c *gin.Context) {
 
 // checks if the client owns the resource
 func AuthorizeOwner() func(c *gin.Context) {
-	return func(c *gin.Context) {}
+	return func(c *gin.Context) {
+		current_user_id, _ := c.Get("user_id")
+		owner_id := c.Param("id")
+
+		if current_user_id != owner_id {
+			c.Status(http.StatusForbidden)
+			return
+		}
+
+		c.Next()
+	}
 }
