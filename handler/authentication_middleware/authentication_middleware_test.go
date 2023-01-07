@@ -11,18 +11,9 @@ import (
 )
 
 var _ = Describe("AuthenticationMiddleware", func() {
-	var r *gin.Engine
 
 	Describe("Authenticate", func() {
-		BeforeEach(func() {
-			r = gin.Default()
-			r.POST("/authenticate", authentication_middleware.Authenticate())
-		})
-
 		It("sets a context specific value user_id when the user is authenticated", func() {
-			rec := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(rec)
-
 			req, _ := http.NewRequest("POST", "/authenticate", nil)
 			req.AddCookie(
 				&http.Cookie{
@@ -31,20 +22,28 @@ var _ = Describe("AuthenticationMiddleware", func() {
 				},
 			)
 
-			r.ServeHTTP(rec, req)
+			rec := httptest.NewRecorder()
 
-			_, user_id_exists := c.Keys["user_id"]
+			c, _ := gin.CreateTestContext(rec)
+			c.Request = req
+
+			authentication_middleware.Authenticate()(c)
+			user_id, user_id_exists := c.Keys["user_id"]
 
 			Expect(user_id_exists).To(BeTrue())
+			Expect(user_id).To(Equal("1"))
 		})
 
 		It("responds with status 401: unauthorized when the user is not authenticated", func() {
 			rec := httptest.NewRecorder()
-
 			req, _ := http.NewRequest("POST", "/authenticate", nil)
-			r.ServeHTTP(rec, req)
 
-			Expect(rec.Result().StatusCode).To(Equal(401))
+			c, _ := gin.CreateTestContext(rec)
+			c.Request = req
+
+			authentication_middleware.Authenticate()(c)
+
+			Expect(c.Writer.Status()).To(Equal(401))
 		})
 	})
 })
