@@ -3,8 +3,6 @@ package user_service
 import (
 	"encoding/json"
 	"net/mail"
-
-	"github.com/derUbermenk/go-user_auth_api/repository/user_repository"
 )
 
 type NewUserRequest struct {
@@ -44,14 +42,6 @@ type UserService interface {
 	FetchUser(id int) (user interface{}, err error)
 	FetchUserSelf(id int) (user interface{}, err error)
 	DeleteUser(id int) (deleted_user interface{}, err error)
-}
-
-type UserRepositoryInterface interface {
-	Create(user_info map[string]interface{}) (user user_repository.User, err error)
-	FindByEmail(email string) (user user_repository.User, err error)
-	FindPublic(id int) (user user_repository.User, err error)
-	FindPrivate(id int) (user user_repository.User, err error)
-	Delete(id int) (deleted_user user_repository.User, err error)
 }
 
 type userservice struct {
