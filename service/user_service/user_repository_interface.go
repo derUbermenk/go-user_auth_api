@@ -2,6 +2,14 @@ package user_service
 
 import "github.com/derUbermenk/go-user_auth_api/repository/user_repository"
 
+type UserRepositoryInterface interface {
+	Create(user_info map[string]interface{}) (user user_repository.User, err error)
+	FindByEmail(email string) (user user_repository.User, err error)
+	FindPublic(id int) (user user_repository.User, err error)
+	FindPrivate(id int) (user user_repository.User, err error)
+	Delete(id int) (deleted_user user_repository.User, err error)
+}
+
 type UserRepositoryDouble struct{}
 
 func (u *UserRepositoryDouble) Create(user_info map[string]interface{}) (user user_repository.User, err error) {
