@@ -50,11 +50,17 @@ type UserRepositoryInterface interface {
 	Create(user_info map[string]interface{}) (user user_repository.User, err error)
 }
 
-type UserServ struct {
+type userservice struct {
 	user_db UserRepositoryInterface
 }
 
-func (u *UserServ) CreateUser(newUserRequest NewUserRequest) (user interface{}, success bool, err error) {
+func NewUserService(db UserRepositoryInterface) UserService {
+	return &userservice{
+		user_db: db,
+	}
+}
+
+func (u *userservice) CreateUser(newUserRequest NewUserRequest) (user interface{}, success bool, err error) {
 	// check presence of required fields
 	valid := newUserRequest.is_valid()
 
@@ -65,6 +71,22 @@ func (u *UserServ) CreateUser(newUserRequest NewUserRequest) (user interface{}, 
 
 	user_info := newUserRequest.to_map()
 	user, err = u.user_db.Create(user_info)
+	success = true
+	return
+}
 
+func (u *userservice) FetchUserByEmail(email string) (user interface{}, err error) {
+	return
+}
+
+func (u *userservice) FetchUser(id int) (user interface{}, err error) {
+	return
+}
+
+func (u *userservice) FetchUserSelf(id int) (user interface{}, err error) {
+	return
+}
+
+func (u *userservice) DeleteUser(id int) (deleted_user interface{}, err error) {
 	return
 }
