@@ -13,3 +13,7 @@ type UserService interface {
 	FetchUserSelf(id int) (user interface{}, err error)
 	DeleteUser(id int) (deleted_user interface{}, err error)
 }
+
+type UserRepositoryInterface interface {
+	Create() (err error)
+}
