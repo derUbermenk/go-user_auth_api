@@ -1,5 +1,11 @@
 package user_repository
 
-type User struct {
-	ID int `db:"id"`
+import "github.com/jmoiron/sqlx"
+
+type userrepository struct {
+	db *sqlx.DB
+}
+
+func NewUserRepository(db *sqlx.DB) (uR *userrepository) {
+	return &userrepository{db: db}
 }
