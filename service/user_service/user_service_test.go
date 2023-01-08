@@ -61,4 +61,22 @@ var _ = Describe("UserService", func() {
 			Expect(err).To(BeNil())
 		})
 	})
+
+	Describe("FetchUser", func() {
+		It("returns the user when it exists", func() {
+			existing_id := 1
+			user, err := us.FetchUser(existing_id)
+
+			Expect(user).To(Not(BeNil()))
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a nil user when it does not exist", func() {
+			existing_id := 2
+			user, err := us.FetchUser(existing_id)
+
+			Expect(user).To((BeNil()))
+			Expect(err).To(BeNil())
+		})
+	})
 })

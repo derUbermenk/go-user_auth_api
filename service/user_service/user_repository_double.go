@@ -16,3 +16,12 @@ func (u *UserRepositoryDouble) FindByEmail(email string) (user user_repository.U
 
 	return
 }
+
+func (u *UserRepositoryDouble) FindPublic(id int) (user user_repository.User, err error) {
+	if id == 1 {
+		user.ID = 1
+		return
+	}
+
+	return
+}

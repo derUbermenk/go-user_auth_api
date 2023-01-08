@@ -49,6 +49,7 @@ type UserService interface {
 type UserRepositoryInterface interface {
 	Create(user_info map[string]interface{}) (user user_repository.User, err error)
 	FindByEmail(email string) (user user_repository.User, err error)
+	FindPublic(id int) (user user_repository.User, err error)
 }
 
 type userservice struct {
@@ -88,6 +89,13 @@ func (u *userservice) FetchUserByEmail(email string) (user interface{}, err erro
 }
 
 func (u *userservice) FetchUser(id int) (user interface{}, err error) {
+	public_user, err := u.user_db.FindPublic(id)
+
+	if public_user.ID == 0 {
+		return
+	}
+
+	user = public_user
 	return
 }
 
