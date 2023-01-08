@@ -8,7 +8,7 @@ import (
 )
 
 var _ = Describe("UserService", func() {
-	us := user_service.UserServ(UserRepositoryDouble{})
+	us := user_service.NewUserService(&user_service.UserRepositoryDouble{})
 
 	Describe("CreateUser", func() {
 		Context("when user creation succeeded", func() {
@@ -35,12 +35,30 @@ var _ = Describe("UserService", func() {
 					// missing password
 				}
 
-				user, success, err := us.Create(new_user_request)
+				user, success, err := us.CreateUser(new_user_request)
 
-				Expect(user).To(Not(BeNil()))
-				Expect(success).To(BeTrue())
+				Expect(user).To((BeNil()))
+				Expect(success).To(BeFalse())
 				Expect(err).To(BeNil())
 			})
+		})
+	})
+
+	Describe("FetchUserByEmail", func() {
+		It("returns a user when it exists", func() {
+			email := "existing_user_email@email.com"
+			user, err := us.FetchUserByEmail(email)
+
+			Expect(user).To(Not(BeNil()))
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a nil when it does not exist", func() {
+			email := "non_existing_user_email@email.com"
+			user, err := us.FetchUserByEmail(email)
+
+			Expect(user).To((BeNil()))
+			Expect(err).To(BeNil())
 		})
 	})
 })
