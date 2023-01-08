@@ -51,6 +51,7 @@ type UserRepositoryInterface interface {
 	FindByEmail(email string) (user user_repository.User, err error)
 	FindPublic(id int) (user user_repository.User, err error)
 	FindPrivate(id int) (user user_repository.User, err error)
+	Delete(id int) (deleted_user user_repository.User, err error)
 }
 
 type userservice struct {
@@ -112,5 +113,12 @@ func (u *userservice) FetchUserSelf(id int) (user interface{}, err error) {
 }
 
 func (u *userservice) DeleteUser(id int) (deleted_user interface{}, err error) {
+	deleted_id, err := u.user_db.Delete(id)
+
+	if deleted_id.ID == 0 {
+		return
+	}
+
+	deleted_user = deleted_id
 	return
 }

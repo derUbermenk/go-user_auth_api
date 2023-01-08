@@ -97,4 +97,22 @@ var _ = Describe("UserService", func() {
 			Expect(err).To(BeNil())
 		})
 	})
+
+	Describe("DeleteUser", func() {
+		It("returns the deleted user on success", func() {
+			existing_id := 1
+			user, err := us.FetchUserSelf(existing_id)
+
+			Expect(user).To(Not(BeNil()))
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a nil user when it does not succeed", func() {
+			existing_id := 2
+			user, err := us.FetchUserSelf(existing_id)
+
+			Expect(user).To((BeNil()))
+			Expect(err).To(BeNil())
+		})
+	})
 })

@@ -34,3 +34,13 @@ func (u *UserRepositoryDouble) FindPrivate(id int) (user user_repository.User, e
 
 	return
 }
+
+func (u *UserRepositoryDouble) Delete(id int) (deleted_user user_repository.User, err error) {
+	if id == 1 {
+		deleted_user.ID = 1
+
+		return
+	}
+
+	return
+}
