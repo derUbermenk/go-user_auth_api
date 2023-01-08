@@ -1,9 +1,39 @@
 package user_service
 
+import (
+	"encoding/json"
+	"net/mail"
+)
+
 type NewUserRequest struct {
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Password string `json:"password"`
+}
+
+func (req *NewUserRequest) is_valid() (valid bool) {
+	// assert email is valid
+	if _, err := mail.ParseAddress(req.Email); err != nil {
+		return
+	}
+
+	if req.Name == "" {
+		return
+	}
+
+	if req.Password == "" {
+		return
+	}
+
+	return true
+}
+
+func (req *NewUserRequest) to_map() (info map[string]interface{}) {
+	data, _ := json.Marshal(req)
+
+	json.Unmarshal(data, &info)
+
+	return
 }
 
 type UserService interface {
@@ -15,5 +45,24 @@ type UserService interface {
 }
 
 type UserRepositoryInterface interface {
-	Create() (err error)
+	Create(user_info map[string]interface{}) (user user_db.User, err error)
+}
+
+type UserServ struct {
+	user_db UserRepositoryInterface
+}
+
+func (u *UserServ) CreateUser(newUserRequest NewUserRequest) (user interface{}, success bool, err error) {
+	// check presence of required fields
+	valid := newUserRequest.is_valid()
+
+	if !valid {
+		success = false
+		return
+	}
+
+	user_info := newUserRequest.to_map()
+	user, err = u.user_db.Create(user_info)
+
+	return
 }
