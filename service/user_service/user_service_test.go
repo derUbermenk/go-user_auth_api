@@ -8,7 +8,7 @@ import (
 )
 
 var _ = Describe("UserService", func() {
-	us := userService.UserServiceStruct(UserRepositoryDouble{})
+	us := userService.UserServ(UserRepositoryDouble{})
 
 
 	Describe("CreateUser", func() {
@@ -20,7 +20,7 @@ var _ = Describe("UserService", func() {
 					Password: "valid_password",
 				}
 
-				user, success, err := us.Create(new_user_request)
+				user, success, err := us.CreateUser(new_user_request)
 
 				Expect(user).To(Not(BeNil()))
 				Expect(success).To(BeTrue())
