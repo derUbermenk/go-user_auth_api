@@ -45,7 +45,7 @@ type UserService interface {
 }
 
 type UserRepositoryInterface interface {
-	Create(user_info map[string]interface{}) (user user_db.User, err error)
+	Create(user_info map[string]interface{}) (user user_repository.User, err error)
 }
 
 type UserServ struct {
