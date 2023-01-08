@@ -3,6 +3,8 @@ package user_service
 import (
 	"encoding/json"
 	"net/mail"
+
+	"github.com/derUbermenk/go-user_auth_api/repository/user_repository"
 )
 
 type NewUserRequest struct {
