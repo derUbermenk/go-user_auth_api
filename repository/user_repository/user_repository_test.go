@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/derUbermenk/go-user_auth_api/repository"
 	"github.com/derUbermenk/go-user_auth_api/repository/user_repository"
 	_ "github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
@@ -105,15 +106,20 @@ var _ = Describe("UserRepository", func() {
 			DropDB()
 		})
 
-		It("creates a new user record given valid values", func() {
+		It("returns a user with the id of the created record", func() {
 			db := ConnectTestDB()
-			_ = user_repository.NewUserRepository(db)
+			ur := user_repository.NewUserRepository(db)
 
-			Expect(1).To(Equal(1))
-		})
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"name":     "user name",
+				"password": "user_password",
+			}
 
-		It("creates a new user record given valid values", func() {
+			user, err := ur.Create(input)
 
+			Expect(user).To(Equal(repository.User{ID: 1}))
+			Expect(err).To(Not(BeNil()))
 		})
 	})
 })
