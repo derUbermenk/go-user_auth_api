@@ -8,6 +8,7 @@ import (
 	"github.com/derUbermenk/go-user_auth_api/repository/user_repository"
 	_ "github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -29,7 +30,10 @@ func CreateDB() {
 }
 
 func DropDB() {
-	cmd := exec.Command("dropdb", "user_authed_api_test")
+	// cmd := exec.Command("dropdb", "user_authed_api_test")
+	migrations_path := "file:/home/chester/Documents/code_projects/go-projects/user_auth_api/repository/migrations"
+	db_connstring := "postgres://chester:baba_yetu@localhost:5432/user_authed_api_test?sslmode=disable"
+	cmd := exec.Command("migrate", "-source", migrations_path, "-database", db_connstring, "drop", "-f")
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
@@ -75,12 +79,25 @@ func RunMigrations() {
 	}
 }
 
+func ConnectTestDB() *sqlx.DB {
+	db_connstring := "postgres://chester:baba_yetu@localhost:5432/user_authed_api_test?sslmode=disable"
+	db, err := sqlx.Connect("postgres", db_connstring)
+
+	if err != nil {
+		AbortSuite(err.Error())
+	}
+
+	if err := db.Ping(); err != nil {
+		AbortSuite(err.Error())
+	}
+
+	return db
+}
+
 var _ = Describe("UserRepository", func() {
-	// var db *sqlx.DB
 
 	Describe("Create", func() {
 		BeforeEach(func() {
-			CreateDB()
 			RunMigrations()
 		})
 
@@ -89,13 +106,14 @@ var _ = Describe("UserRepository", func() {
 		})
 
 		It("creates a new user record given valid values", func() {
+			db := ConnectTestDB()
 			_ = user_repository.NewUserRepository(db)
+
+			Expect(1).To(Equal(1))
 		})
 
 		It("creates a new user record given valid values", func() {
 
 		})
-
-		// after reset db
 	})
 })
