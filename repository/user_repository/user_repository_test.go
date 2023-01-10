@@ -211,7 +211,7 @@ var _ = Describe("UserRepository", func() {
 		})
 	})
 
-	Describe("FetchUser", func() {
+	Describe("FindPublic", func() {
 		BeforeEach(func() {
 			DropDB()
 			RunMigrations()
@@ -234,7 +234,7 @@ var _ = Describe("UserRepository", func() {
 
 			Expect(err).To(BeNil())
 
-			user, err := ur.FetchUser(1)
+			user, err := ur.FindPublic(1)
 			Expect(user).To(Equal(repository.User{
 				ID:    1,
 				Email: "email@email.com",
@@ -256,7 +256,7 @@ var _ = Describe("UserRepository", func() {
 
 			Expect(err).To(BeNil())
 
-			user, err := ur.FetchUser(77)
+			user, err := ur.FindPublic(77)
 			Expect(user).To(BeZero())
 
 			Expect(err).To(BeNil())
