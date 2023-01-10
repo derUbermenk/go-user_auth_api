@@ -210,4 +210,56 @@ var _ = Describe("UserRepository", func() {
 			})
 		})
 	})
+
+	Describe("FetchUser", func() {
+		BeforeEach(func() {
+			DropDB()
+			RunMigrations()
+		})
+
+		AfterEach(func() {
+			DropDB()
+		})
+
+		It("returns the specific user without exposing the password", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+
+			Expect(err).To(BeNil())
+
+			user, err := ur.FetchUser(1)
+			Expect(user).To(Equal(repository.User{
+				ID:    1,
+				Email: "email@email.com",
+			}))
+
+			Expect(err).To(BeNil())
+		})
+
+		It("returns returns a zero value user when the user with given user id does not exist", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+
+			Expect(err).To(BeNil())
+
+			user, err := ur.FetchUser(77)
+			Expect(user).To(BeZero())
+
+			Expect(err).To(BeNil())
+		})
+	})
 })
