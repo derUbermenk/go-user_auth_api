@@ -59,3 +59,14 @@ func (u *userrepository) FindPublic(id int) (user repository.User, err error) {
 
 	return
 }
+
+func (u *userrepository) FindPrivate(id int) (user repository.User, err error) {
+	err = u.db.Get(&user, `SELECT * FROM users WHERE id=$1`, id)
+
+	if err == sql.ErrNoRows {
+		err = nil
+		return
+	}
+
+	return
+}
