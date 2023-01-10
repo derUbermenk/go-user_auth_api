@@ -70,3 +70,14 @@ func (u *userrepository) FindPrivate(id int) (user repository.User, err error) {
 
 	return
 }
+
+func (u *userrepository) Delete(id int) (deleted_user repository.User, err error) {
+	err = u.db.QueryRow(`DELETE FROM users WHERE id=$1 RETURNING id`, id).Scan(&deleted_user.ID)
+
+	if err == sql.ErrNoRows {
+		err = nil
+		return
+	}
+
+	return
+}
