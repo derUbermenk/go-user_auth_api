@@ -46,3 +46,16 @@ func (u *userrepository) FindByEmail(email string) (user repository.User, err er
 
 	return
 }
+
+func (u *userrepository) FetchUser(id int) (user repository.User, err error) {
+	err = u.db.Get(&user, `SELECT * FROM users WHERE id=$1`, id)
+
+	user.Password = ""
+
+	if err == sql.ErrNoRows {
+		err = nil
+		return
+	}
+
+	return
+}
