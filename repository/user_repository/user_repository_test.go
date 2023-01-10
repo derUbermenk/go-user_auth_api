@@ -315,4 +315,68 @@ var _ = Describe("UserRepository", func() {
 			Expect(err).To(BeNil())
 		})
 	})
+
+	Describe("Delete", func() {
+		BeforeEach(func() {
+			DropDB()
+			RunMigrations()
+		})
+
+		AfterEach(func() {
+			DropDB()
+		})
+
+		It("deletes the user", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+			Expect(err).To(BeNil())
+
+			_, err = ur.Delete(1)
+			Expect(err).To(BeNil())
+
+			user, err := ur.FindPublic(1)
+
+			Expect(user).To(BeZero())
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a user struct containing the id of the deleted user", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+
+			Expect(err).To(BeNil())
+
+			deleted_user, err := ur.Delete(1)
+			Expect(err).To(BeNil())
+
+			Expect(deleted_user).To(Equal(repository.User{
+				ID: 1,
+			}))
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a zero valued user struct if the user does not exist", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			deleted_user, err := ur.Delete(1)
+
+			Expect(deleted_user).To(BeZero())
+			Expect(err).To(BeNil())
+		})
+	})
 })
