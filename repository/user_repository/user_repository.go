@@ -1,6 +1,8 @@
 package user_repository
 
 import (
+	"database/sql"
+
 	"github.com/derUbermenk/go-user_auth_api/repository"
 	"github.com/jmoiron/sqlx"
 )
@@ -25,6 +27,20 @@ func (u *userrepository) Create(userInfo map[string]interface{}) (user repositor
 
 	err = tx.Commit()
 	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (u *userrepository) FindByEmail(email string) (user repository.User, err error) {
+	err = u.db.Get(&user, `SELECT * FROM users WHERE email=$1`, email)
+
+	// set user password to null
+	user.Password = ""
+
+	if err == sql.ErrNoRows {
+		err = nil
 		return
 	}
 

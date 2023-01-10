@@ -99,6 +99,7 @@ var _ = Describe("UserRepository", func() {
 
 	Describe("Create", func() {
 		BeforeEach(func() {
+			DropDB()
 			RunMigrations()
 		})
 
@@ -112,14 +113,101 @@ var _ = Describe("UserRepository", func() {
 
 			input := map[string]interface{}{
 				"email":    "email@email.com",
-				"name":     "user name",
 				"password": "user_password",
 			}
 
 			user, err := ur.Create(input)
 
 			Expect(user).To(Equal(repository.User{ID: 1}))
-			Expect(err).To(Not(BeNil()))
+			Expect(err).To(BeNil())
+		})
+
+		It("returns a user value repository.User when the entered user email is already in the db", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			ur.Create(input)
+			user, err := ur.Create(input)
+
+			Expect(user).To(Equal(repository.User{}))
+			Expect(err).ToNot(BeNil())
+		})
+	})
+
+	Describe("FindByEmail", func() {
+		BeforeEach(func() {
+			DropDB()
+			RunMigrations()
+		})
+
+		AfterEach(func() {
+			DropDB()
+		})
+
+		It("returns the expected user record", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+
+			Expect(err).To(BeNil())
+
+			user, err := ur.FindByEmail("email@email.com")
+			Expect(user).To(Equal(repository.User{
+				ID:    1,
+				Email: "email@email.com",
+			}))
+
+			Expect(err).To(BeNil())
+		})
+
+		It("does not include the password of the user", func() {
+			db := ConnectTestDB()
+			ur := user_repository.NewUserRepository(db)
+
+			input := map[string]interface{}{
+				"email":    "email@email.com",
+				"password": "user_password",
+			}
+
+			_, err := ur.Create(input)
+
+			Expect(err).To(BeNil())
+
+			user, err := ur.FindByEmail("email@email.com")
+			Expect(user.Password).To(BeEmpty())
+
+			Expect(err).To(BeNil())
+		})
+
+		Context("when the user with email does not exist", func() {
+			It("returns a zero valued user", func() {
+				db := ConnectTestDB()
+				ur := user_repository.NewUserRepository(db)
+
+				input := map[string]interface{}{
+					"email":    "email@email.com",
+					"password": "user_password",
+				}
+
+				_, err := ur.Create(input)
+
+				Expect(err).To(BeNil())
+
+				user, err := ur.FindByEmail("non_existing_email@email.com")
+				Expect(user).To(BeZero())
+				Expect(err).To(BeNil())
+			})
 		})
 	})
 })
